@@ -1,8 +1,8 @@
 {
   "name": "peters-node-resemble-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Image analysis and comparison for nodejs",
-  "main": "peters-node-resemble-js",
+  "main": "resemble.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/peter-vdc/node-resemble.js.git"
