@@ -613,6 +613,10 @@ _this['resemble'].outputSettings = function(options) {
 
 	pixelTransparency = options.transparency || pixelTransparency;
 
+	if (options.largeImageThreshold !== undefined) {
+		largeImageThreshold = options.largeImageThreshold;
+	}
+
 	return this;
 };
 
