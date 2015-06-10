@@ -615,4 +615,4 @@ var _this = {};
 		return this;
 	};
 
-module.exports = _this['resemble']
+module.exports = _this['resemble'];
