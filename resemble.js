@@ -140,20 +140,27 @@ _this['resemble'] = function( fileData ) {
 		var png = new PNG({filterType: 4});
 		if (Buffer.isBuffer(fileData)) {
 			png.parse(fileData, function (err, data) {
-				callback(data, data.width, data.height);
+				return callback(data, data.width, data.height);
 			});
 		} else {
 			if (httpRegex.test(fileData)) {
 				request.get(fileData)
 					.pipe(png)
 					.on('parsed', function () {
-						callback(this, this.width, this.height);
+						return callback(this, this.width, this.height);
+					})
+					.on('error', function(err) {
+						data.error = err;
+						return callback();
 					});
 			} else {
 				fs.createReadStream(fileData)
 					.pipe(png)
 					.on('parsed', function () {
-						callback(this, this.width, this.height);
+						return callback(this, this.width, this.height);
+					}).on('error', function() {
+						data.error = err;
+						return callback();
 					});
 			}
 
@@ -469,22 +476,23 @@ _this['resemble'] = function( fileData ) {
 
 			images.push(img);
 			if (images.length === 2) {
-				width = images[0].width > images[1].width ? images[0].width : images[1].width;
-				height = images[0].height > images[1].height ? images[0].height : images[1].height;
-
-				if ((images[0].width === images[1].width) && (images[0].height === images[1].height)) {
-					data.isSameDimensions = true;
-				} else {
-					data.isSameDimensions = false;
+				if (images[0] && images[1]){
+					width = images[0].width > images[1].width ? images[0].width : images[1].width;
+					height = images[0].height > images[1].height ? images[0].height : images[1].height;
+					
+					if ((images[0].width === images[1].width) && (images[0].height === images[1].height)) {
+						data.isSameDimensions = true;
+					} else {
+						data.isSameDimensions = false;
+					}
+					
+					data.dimensionDifference = {
+						width: images[0].width - images[1].width,
+						height: images[0].height - images[1].height
+					};
+					//lksv: normalization removed
+					analyseImages(images[0], images[1], width, height);
 				}
-
-				data.dimensionDifference = {
-					width: images[0].width - images[1].width,
-					height: images[0].height - images[1].height
-				};
-
-				//lksv: normalization removed
-				analyseImages(images[0], images[1], width, height);
 
 				triggerDataUpdate();
 			}
